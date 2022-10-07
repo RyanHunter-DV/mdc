@@ -28,3 +28,10 @@ public:
 	int a = 10;
 	cout<<"a: "<<a<<endl;
 ```
+
+# features
+- [[F-base_architecture]]
+- [[F-prototype_detection]]
+- [[F-filename_detection]]
+- [[F-SV_keywords_build]]
+- 
