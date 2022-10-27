@@ -1,0 +1,11 @@
+#! /usr/bin/env ruby
+useVersion = 'v2';
+require 'rhload';
+$TOOLHOME = File.dirname(File.absolute_path(__FILE__))+'/'+useVersion;
+$LOAD_PATH << $TOOLHOME;
+
+rhload 'lib/mainEntry';
+
+e = MainEntry.new();
+$SIG = e.run();
+exit $SIG;
