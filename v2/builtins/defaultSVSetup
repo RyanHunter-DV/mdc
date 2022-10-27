@@ -1,0 +1,25 @@
+defaultSetup 'driver' do
+	@type   = :uvm_driver;
+	@tparam = 'REQ=uvm_sequence_item,RSP=REQ';
+	@base   = 'uvm_driver#(REQ,RSP)';
+end
+defaultSetup 'monitor' do
+	@type   = :uvm_monitor;
+	@tparam = 'REQ=uvm_sequence_item,RSP=REQ';
+	@base   = 'uvm_monitor#(REQ,RSP)';
+end
+defaultSetup 'component' do
+	@type   = :uvm_component;
+	@base   = 'uvm_component';
+end
+defaultSetup 'sequencer' do
+	@type   = :uvm_sequencer;
+	@tparam = 'REQ=uvm_sequence_item,RSP=REQ';
+	@base   = 'uvm_sequencer#(REQ,RSP)';
+end
+defaultSetup 'class' do
+	@type   = :svclass;
+end
+defaultSetup 'vclass' do
+	@type   = :virtual_svclass;
+end
