@@ -23,3 +23,13 @@ end
 defaultSetup 'vclass' do
 	@type   = :virtual_svclass;
 end
+defaultSetup 'agent' do
+	@type = :uvm_agent;
+	@base = 'uvm_agent';
+end
+
+# add objects
+defaultSetup 'transaction' do
+	@type = :uvm_sequence_item;
+	@base = 'uvm_sequence_item';
+end
