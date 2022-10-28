@@ -2,13 +2,12 @@ class SVMethod < CommonMark ##{
 	@@staticSupportiveMarks = [
 		'task','stask','vtask','ltask','lvtask',
 		'func','sfunc','vfunc','lfunc','lvfunc',
-		'build','connect','run'
+		'new','build','connect','run'
 	];
-	@@builtins = ['build','connect','run'];
+	@@builtins = ['new','build','connect','run'];
 	def self.marks; return @@staticSupportiveMarks; end
 
 	attr_accessor :container;
-	attr_accessor :name;
 	attr_accessor :type;
 	
 	attr :mark;
@@ -18,7 +17,7 @@ class SVMethod < CommonMark ##{
 
 	def initialize mk,cls ##{{{
 		@mark = mk.to_s;
-		@container = cls.to_s;
+		@container = cls;
 		@prototype = [];
 		@procedures = [];
 		__setupType__;
@@ -35,11 +34,24 @@ class SVMethod < CommonMark ##{
 	end ##}}}
 
 	def __setupBuiltins__ ##{{{
-		@qualifiers << 'virtual';
+		@qualifiers << 'virtual' unless @mark=='new';
+		@prototype << 'function' if @mark=='new';
 		@prototype << 'function void' if @mark=='build' or @mark=='connect';
 		@prototype << 'task' if @mark=='run';
-		@prototype << @mark.to_s+'_phase(uvm_phase phase)';
-		@procedures << 'super.'+@mark.to_s+'_phase(phase);';
+		if (@mark=='new')
+			## for new
+			proto = 'new (string name="'+@container.name+'"';
+			proto += ',uvm_component parent=null' if @container.isComponent;
+			proto += ');';
+			@prototype << proto;
+			body = 'super.new(name';
+			body += ',parent' if @container.isComponent;
+			body += ');';
+			@procedures << body;
+		else
+			@prototype << @mark.to_s+'_phase(uvm_phase phase)';
+			@procedures << 'super.'+@mark.to_s+'_phase(phase);';
+		end
 		return;
 	end ##}}}
 

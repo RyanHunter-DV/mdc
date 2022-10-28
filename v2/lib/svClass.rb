@@ -40,7 +40,30 @@ class SVClass < CommonMark ##{
 			block.call;
 		end
 	end ##}}}
-
+	def isComponent ##{{{
+		if (
+			@type==:uvm_component or
+			@type==:uvm_driver or
+			@type==:uvm_monitor or
+			@type==:uvm_sequencer or
+			@type==:uvm_agent
+		)
+			return true;
+		else
+			return false;
+		end
+	end ##}}}
+	def isObject ##{{{
+		if (
+			@type==:uvm_object or
+			@type==:uvm_sequene or
+			@type==:uvm_sequence_item
+		)
+			return true;
+		else
+			return false;
+		end
+	end ##}}}
 	"""
 	setMark: this API will generate a class declaration header according to input mark
 	for example, if mark is 'vclass', then type will be 'virtual class', and also the
@@ -110,5 +133,19 @@ class SVClass < CommonMark ##{
 		@tlms << tlm;
 		return tlm;
 	end ##}}}
-
+	def uvmutils ##{{{
+		declbegin = '`uvm_';
+		declend = '`uvm_';
+		if isComponent
+			declbegin+='component_';
+			declend+='component_';
+		else
+			declend+='object_';
+			declend+='object_';
+		end
+		declbegin+='utils_begin('+name+')';
+		declend+='utils_end'
+		@fields << declbegin;
+		@fields << declend;
+	end ##}}}
 end ##}

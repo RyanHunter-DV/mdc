@@ -32,7 +32,7 @@ class SVSupport < DataBase ##{
 		end
 	end ##}}}
 	def __processMethodMark mk ##{{{
-		m = SVMethod.new(mk,cls.name);
+		m = SVMethod.new(mk,cls);
 		m.extractPrototype(fp) unless m.isBuiltin;
 		m.extractProcedures(fp);
 		@ms << m;
@@ -94,7 +94,7 @@ class SVSupport < DataBase ##{
 		return if @cls==nil;
 		tlm = @cls.extractTLM(mk,fp);
 		if (mk=='ap-imp')
-			m = SVMethod.new('func',cls.name);
+			m = SVMethod.new('func',cls);
 			m.setupTLMMethod(tlm,fp);
 		end
 	end ##}}}
@@ -106,6 +106,8 @@ class SVSupport < DataBase ##{
 		__processBaseMark(mk)   if isBaseMark(mk);
 		__processFieldMark(mk)  if isFieldMark(mk);
 		__processTLMMark(mk)    if isTLMMark(mk);
+		## package
+		## interface
 	end ##}}}
 	"""
 	processSource: API to process the source file in @fp object
@@ -117,5 +119,44 @@ class SVSupport < DataBase ##{
 			mark = fp.getNextMark;
 			__processMark(mark);
 		end
+		smartAssembly;
+	end ##}}}
+
+	"""
+	smartAssembly: for different type of class/methods, to setup some of the default contents
+	according to input source for now.
+	"""
+	def smartAssembly ##{{{
+		## add new methods for all uvm components/objects
+		if __noNewSpecified__
+			m = SVMethod.new('new',cls);
+			ms << m;
+		end
+		phs = ['build','connect','run'];
+		phs.each do |ph|
+			if __noPhaseSpecified(ph)
+				m=SVMethod.new(ph,cls);
+				ms << m;
+			end
+		end
+		cls.uvmutils;
+	end ##}}}
+	"""
+	__noPhaseSpecified__: if user not manually specified a phase method for a uvm component, then return true
+	"""
+	def __noPhaseSpecified pn ##{{{
+		ms.each do |m|
+			return false if m.mark==pn;
+		end
+		return true;
+	end ##}}}
+	"""
+	__noNewSpecified__: if there's no manually new added in ms
+	"""
+	def __noNewSpecified__ ##{{{
+		ms.each do |m|
+			return false if m.mark == 'new';
+		end
+		return true;
 	end ##}}}
 end ##}
