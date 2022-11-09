@@ -29,6 +29,9 @@ class MainEntry ##{
 		end
 		## 3.process source file, store information into db
 		db.processSource();
+		
+		smb = SmartBuilder.new(db);
+		smb.optimizeDataBase();
 		## 4.generate target file.
 		gen = Generator.new(db);
 		gen.publish();

@@ -1,111 +1,151 @@
-class SVMethod < CommonMark ##{
-	@@staticSupportiveMarks = [
-		'task','stask','vtask','ltask','lvtask',
-		'func','sfunc','vfunc','lfunc','lvfunc',
-		'new','build','connect','run'
-	];
-	@@builtins = ['new','build','connect','run'];
-	def self.marks; return @@staticSupportiveMarks; end
+class SVMethod ##{
+	attr :prototype;
+	attr :body;
+	attr :container;
+	attr :qualifiers; ## virtual, static ...
+	attr :type; ## task or func
+	attr :returnType;
+	attr :builtinMarks;
 
-	attr_accessor :container;
-	attr_accessor :type;
-	
-	attr :mark;
-	attr :qualifiers; ## [] stored kind of local/virtual ...
-	attr_accessor :prototype;
-	attr_accessor :procedures;
-
-	def initialize mk,cls ##{{{
-		@mark = mk.to_s;
+	def initialize p='',cls,mk='func' ##{{{
 		@container = cls;
-		@prototype = [];
-		@procedures = [];
-		__setupType__;
-		__extractQualifiersFromMark__;
-		__setupBuiltins__ if @@builtins.include?(mk);
+		@body = [];
+		__initBuiltinMarks__;
+		if __isBuiltIns__(mk)
+			p = createProtoAndBodyForBuiltIns(mk);
+			mk= changeBuiltInMarkToCommonMark(mk);
+		end
+		__initQualifiers__(mk);
+		__initMethodType__(mk);
+		__initPrototype__(p);
 	end ##}}}
-	def __setType__ ##{{{
-		ptrn = RegExp.new('\w*task');
-		if (ptrn.match(@mark))
+	def addBody procs ##{{{
+		procs.each do |l|
+			@body << l;
+		end
+		return;
+	end ##}}}
+
+	def __initBuiltinMarks__ ##{{{
+		@builtinMarks = ['new','build','connect','run'];
+	end ##}}}
+	def __isBuiltIns__ mk ##{{{
+		return true if @builtinMarkss.include?(mk);
+		return false;
+	end ##}}}
+	"""
+	builtin mark like **build** should be converted to **vfunc**
+	"""
+	def changeBuiltInMarkToCommonMark mk ##{{{
+		return 'func'  if mk=='new';
+		return 'vfunc' if mk=='build' or mk=='connect';
+		return 'vtask' if mk=='run';
+	end ##}}}
+
+	"""
+	according to the input builtin mark (new,build,...), create a prototype string like a
+	normal method used. For example:
+	'void build_phase(uvm_phase phase)'
+	"""
+	def createProtoAndBodyForBuiltIns mk ##{{{
+		return __initNew__ if mk=='new';
+		return __initFuncPhase__(mk) if mk=='build' or mk=='connect';
+		return __initTaskPhase__(mk) if mk=='run';
+	end ##}}}
+	def __initNew__ ##{{{
+		p = 'new(string name="';
+		p += @container.name+'"';
+		p += ',uvm_component parent=null' if @container.isComponent;
+		p += ')';
+		if @container.isComponent
+			addBody(['super.new(name,parent);']);
+		else
+			addBody(['super.new(name);']);
+		return p;
+	end ##}}}
+	def __initFuncPhase__ mk ##{{{
+		phase = mk+'_phase';
+		p = 'void '+phase+'(uvm_phase phase)';
+		addBody(['super.'+phase+'(phase);'])
+		return p;
+	end ##}}}
+	def __initTaskPhase__- mk ##{{{
+		phase = mk+'_phase';
+		p = phase+'(uvm_phase phase)';
+		## no super.*phase for task now.
+	end ##}}}
+	def __initMethodType__ mk ##{{{
+		if /task/.match(mk)
 			@type = :task;
 		else
-			@type = :func;
-		end
-	end ##}}}
-
-	def __setupBuiltins__ ##{{{
-		@qualifiers << 'virtual' unless @mark=='new';
-		@prototype << 'function' if @mark=='new';
-		@prototype << 'function void' if @mark=='build' or @mark=='connect';
-		@prototype << 'task' if @mark=='run';
-		if (@mark=='new')
-			## for new
-			proto = 'new (string name="'+@container.name+'"';
-			proto += ',uvm_component parent=null' if @container.isComponent;
-			proto += ');';
-			@prototype << proto;
-			body = 'super.new(name';
-			body += ',parent' if @container.isComponent;
-			body += ');';
-			@procedures << body;
-		else
-			@prototype << @mark.to_s+'_phase(uvm_phase phase)';
-			@procedures << 'super.'+@mark.to_s+'_phase(phase);';
+			@type = :function;
 		end
 		return;
 	end ##}}}
 
-	def isBuiltin ##{{{
-		return @@builtins.include?(@mark);
+	def __extractQualifiersFromMark__ mk ##{{{
+		@qualifiers<<'virtual' if mk[0]=='v';
+		@qualifiers<<'static'  if mk[0]=='s';
+		@qualifiers<<'local'   if mk[0]=='l';
+		@qualifiers<<'virtual' if mk[1]=='v';
+		@qualifiers<<'static'  if mk[1]=='s';
+		@qualifiers<<'local'   if mk[1]=='l';
 	end ##}}}
-	def __extractQualifiersFromMark__ ##{{{
-		@qualifiers=[];
-		@qualifiers<<'virtual' if @mark[0]=='v';
-		@qualifiers<<'static'  if @mark[0]=='s';
-		@qualifiers<<'local'   if @mark[0]=='l';
-		@qualifiers<<'virtual' if @mark[1]=='v';
-		@qualifiers<<'static'  if @mark[1]=='s';
-		@qualifiers<<'local'   if @mark[1]=='l';
+	def __initQualifiers__ mk ##{{{
+		@qualifiers = [];
+		@qualifiers << 'extern';
+		__extractQualifiersFromMark__(mk);
 	end ##}}}
-
-	def __splitMethodHeader p ##{{{
-		if @type == :task
-			@prototype << 'task';
+	def __initPrototype__ p ##{{{
+		@prototype = [];
+		@returnType= '';
+		if p.is_a?(String)
 			@prototype << p;
-			return;
-		end
-		ptrn = RegExp.new('(\S+) +(\S+)');
-		md = ptrn.match(p);
-		if md
-			@prototype << 'function '+md(1);
-			@prototype << md(2);
 		else
-			puts "*E, invalid function prototype specified, should be <return> <identifier> ...";
+			@prototype.push(*p);
+		end
+		if @type==:function
+			md = /(\w+) +/.match(@prototype[0]);
+			if md==nil
+				puts "Error, no return type detected for a function";
+				return;
+			end
+			@returnType = md[1];
+			@prototype[0].sub!(md[0],'');
 		end
 		return;
 	end ##}}}
-	def extractPrototype fp ##{{{
-		linenum = fp.currentLine-1;
-		proto = extractOnelineMarkInfo(fp.getline(linenum));
-		proto = extractMultlineMarkInfo(fp) if proto=='';
-		if proto.is_a?(String)
-			__splitMethodHeader(proto);
-		else
-			__splitMethodHeader(proto[0]);
+
+
+
+	def prototype f=:declare ##{{{
+		formatted = [];
+		i = 0;
+		head = '';
+		if f==:declare
+			@qualifiers.each do |q|
+				head += q+' ';
+			end
 		end
-	end ##}}}
-	def extractProcedures fp ##{{{
-		mark = fp.getNextMark;
-		if mark != 'proc'
-			puts "*E, a proc must exists after a method prototype";
-			return;
+		head += @type.to_s+' ';
+		head += @returnType+' ' if @type==:function;
+		head += @container.name+'::' if f!=:declare;
+		head += @prototype[0];
+		formatted << head;
+		for i in (1..@prototype.length()-1) do
+			formatted << @prototype[i];
 		end
-		@procedures.append(*extractMultlineMarkInfo(fp));
+		formatted[i] += ';';
+		return formatted;
 	end ##}}}
-	def setupTLM tlm,fp ##{{{
-		@prototype << 'function void';
-		@prototype << 'write_'+tlm.suffix+'('+tlm.trans+' _tr)';
-		@procedures.append(*extractMultlineMarkInfo(fp));
-		return;
+
+	def body ##{{{
+		bodyCodes = [];
+		bodyCodes.push *(prototype(:define));
+		@body.each do |l|
+			bodyCodes << l;
+		end
+		bodyCodes << 'end'+@type.to_s;
+		return bodyCodes;
 	end ##}}}
 end ##}

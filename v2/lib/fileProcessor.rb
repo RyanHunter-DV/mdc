@@ -9,6 +9,7 @@ class FileProcessor ##{
 	attr :currentColumn;
 	attr :rawContents;
 	attr_accessor :currentLine;
+	attr_accessor :lines;
 
 	def initialize fn ##{{{
 		@source = fn;
@@ -27,6 +28,7 @@ class FileProcessor ##{
 			@rawContents << l if recordStart;
 			recordStart = true if (l == '# Source Code');
 		end
+		@lines = cnts.length();
 	end ##}}}
 
 	"""
@@ -47,7 +49,7 @@ class FileProcessor ##{
 		got = false;
 		p = RegExp.new('\*\*(\w+)\*\*');
 		mark = '';
-		return mark if @currentLine >= @rawContents.len();
+		return mark if @currentLine >= @rawContents.length();
 		while (!got)
 			md = p.match(@rawContents[@currentLine]);
 			if md
@@ -62,4 +64,47 @@ class FileProcessor ##{
 	def getline ln ##{{{
 		return @rawContents[ln];
 	end #}}}
+
+	def extractOnelineMarkInfo rawline=-1
+		ptrn = RegExp.new('\*\*\w+\*\* +`*(.+)`*');
+		rawline = @currentLine if (rawline==-1);
+		md = ptrn.match(rawline);
+		if md
+			return md[1];
+		else
+			return '';
+		end
+	end
+	"""
+	extractMultlineMarkInfo: to get a code block for specific mark, this API doesn't need
+	to know the exact mark, just get the code block between ``` ```, and won't change the
+	current line 'cause the getNextMark API will change it.
+	"""
+	def extractMultlineMarkInfo ##{{{
+		cnts = [];
+		ptrn = RegExp.new('```\w*');
+		md = nil;
+		lindex = 0;
+		return cnts if __notACodeBlock__(@currentLine);
+		while (md==nil) ##{
+			nline = lindex + @currentLine;
+			md = ptrn.match(getline(nline));
+			lindex++;
+		end ##}
+		## start extracting contents until next ```
+		ptrn = RegExp.new('```');
+		md = nil;
+		while (md==nil) ##{
+			nline = lindex+@currentLine;
+			md = ptrn.match(getline(nline));
+			cnts << getline(nline) if md==nil;
+			lindex++;
+		end ##}
+		return cnts;
+	end ##}}}
+
+	def __notACodeBlock__ ln ##{{{
+		return false if (/```\w*/.match(getline(ln)));
+		return true;
+	end ##}}}
 end ##}
