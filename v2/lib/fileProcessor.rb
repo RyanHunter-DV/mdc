@@ -47,7 +47,7 @@ class FileProcessor ##{
 	"""
 	def getNextMark
 		got = false;
-		p = RegExp.new('\*\*(\w+)\*\*');
+		p = Regexp.new('\*\*(\w+)\*\*');
 		mark = '';
 		return mark if @currentLine >= @rawContents.length();
 		while (!got)
@@ -57,6 +57,7 @@ class FileProcessor ##{
 				mark = md[1];
 			end
 			@currentLine+=1;
+			return mark if @currentLine >= @rawContents.length();
 		end
 		return mark;
 	end
@@ -66,9 +67,9 @@ class FileProcessor ##{
 	end #}}}
 
 	def extractOnelineMarkInfo rawline=-1
-		ptrn = RegExp.new('\*\*\w+\*\* +`*(.+)`*');
-		rawline = @currentLine if (rawline==-1);
-		md = ptrn.match(rawline);
+		ptrn = Regexp.new('\*\*\w+\*\* +`*([^`]+)`*');
+		rawline = @currentLine-1 if (rawline==-1);
+		md = ptrn.match(getline(rawline));
 		if md
 			return md[1];
 		else
@@ -82,7 +83,7 @@ class FileProcessor ##{
 	"""
 	def extractMultlineMarkInfo ##{{{
 		cnts = [];
-		ptrn = RegExp.new('```\w*');
+		ptrn = Regexp.new('```\w*');
 		md = nil;
 		lindex = 0;
 		return cnts if __notACodeBlock__(@currentLine);
@@ -92,7 +93,7 @@ class FileProcessor ##{
 			lindex+=1;
 		end ##}
 		## start extracting contents until next ```
-		ptrn = RegExp.new('```');
+		ptrn = Regexp.new('```');
 		md = nil;
 		while (md==nil) ##{
 			nline = lindex+@currentLine;
