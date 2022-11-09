@@ -56,7 +56,7 @@ class FileProcessor ##{
 				got = true;
 				mark = md[1];
 			end
-			@currentLine++;
+			@currentLine+=1;
 		end
 		return mark;
 	end
@@ -89,7 +89,7 @@ class FileProcessor ##{
 		while (md==nil) ##{
 			nline = lindex + @currentLine;
 			md = ptrn.match(getline(nline));
-			lindex++;
+			lindex+=1;
 		end ##}
 		## start extracting contents until next ```
 		ptrn = RegExp.new('```');
@@ -98,7 +98,7 @@ class FileProcessor ##{
 			nline = lindex+@currentLine;
 			md = ptrn.match(getline(nline));
 			cnts << getline(nline) if md==nil;
-			lindex++;
+			lindex+=1;
 		end ##}
 		return cnts;
 	end ##}}}

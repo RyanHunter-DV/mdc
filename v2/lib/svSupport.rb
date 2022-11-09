@@ -34,9 +34,11 @@ class SVSupport < DataBase ##{
 		cls.addMethod(m);
 	end ##}}}
 	def __processTLMs__ mk ##{{{
-
+		tlm = SVTLM.new(mk[:mark]);
+		tlm.setup(mk[:proto].split());
+		tlm.addProcedures if (mk.exists?(:proc));
 	end ##}}}
-	
+
 	def processSource ##{{{
 		@mkpool.marks.each do |mk|
 			__processClass__(mk)   if mk[:type]==:svclass;

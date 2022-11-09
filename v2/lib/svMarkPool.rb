@@ -2,6 +2,7 @@
 This is a markpool ruby class, that collects available marks from a mark file.
 and provides APIs for caller to check the mark types
 """
+
 class SVMarkPool ##{
 	attr :fp;
 	attr :currentClassMark;
@@ -77,6 +78,13 @@ class SVMarkPool ##{
 		end
 		if (mk[:mark]=='proc')
 			@currentMethodMark[:proc] = @fp.extractMultlineMarkInfo;
+			return mk;
+		end
+		if (mk[:type]==:tlm)
+			mk[:proto] = @fp.extractOnelineMarkInfo;
+			proc = @fp.extractMultlineMarkInfo;
+			mk[:proc] = proc if (not proc.empty?);
+			return mk;
 		end
 		return mk;
 	end ##}}}
