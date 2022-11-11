@@ -40,7 +40,7 @@ class SVMarkPool ##{
 		while (mark != '')
 			mark = @fp.getNextMark;
 			mk = __processMark__(mark);
-			@marks << mk;
+			@marks << mk if mk[:type]!=:unknow;
 			@currentClassMark = mk if (mk[:type]==:svclass);
 			@currentMethodMark= mk if (mk[:type]==:method);
 		end
@@ -52,7 +52,9 @@ class SVMarkPool ##{
 		mk[:type] = __getMarkType__(mark);
 		if (mk[:type] == :svclass)
 			mk[:uvmtype] = '';
-			mk[:uvmtype] = mk[:mark] if (@uvmmarks.exists?(mk[:mark]));
+			mk[:uvmtype] = mk[:mark] if (@uvmmarks.include?(mk[:mark]));
+			mk[:name] = @fp.extractOnelineMarkInfo;
+			return mk;
 		end
 		if (mk[:mark] == 'tparam')
 			@currentClassMark[:tparam] = @fp.extractOnelineMarkInfo;
@@ -66,7 +68,7 @@ class SVMarkPool ##{
 
 		## process methods/builtin marks
 		if (mk[:type]== :method)
-			if (@builtinMethods.exists?(mk[:mark]))
+			if (@builtinMethods.include?(mk[:mark]))
 				body = @fp.extractMultlineMarkInfo;
 				mk[:proc] = body if (not body.empty?);
 				return mk;
@@ -86,13 +88,17 @@ class SVMarkPool ##{
 			mk[:proc] = proc if (not proc.empty?);
 			return mk;
 		end
+		if (mk[:type]==:field)
+			mk[:fields] = @fp.extractMultlineMarkInfo;
+			return mk;
+		end
 		return mk;
 	end ##}}}
 	def __getMarkType__ mark ##{{{
-		return :svclass if @classmarks.exists?(mark);
-		return :field   if @fieldmarks.exists?(mark);
-		return :method  if @methodmarks.exists?(mark);
-		return :tlm     if @tlmmarks.exists?(mark);
+		return :svclass if @classmarks.include?(mark);
+		return :field   if @fieldmarks.include?(mark);
+		return :method  if @methodmarks.include?(mark);
+		return :tlm     if @tlmmarks.include?(mark);
 		return :unknow;
 	end ##}}}
 end ##}

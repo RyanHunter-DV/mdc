@@ -47,7 +47,7 @@ class FileProcessor ##{
 	"""
 	def getNextMark
 		got = false;
-		p = Regexp.new('\*\*(\w+)\*\*');
+		p = Regexp.new('\*\*([\w|-]+)\*\*');
 		mark = '';
 		return mark if @currentLine >= @rawContents.length();
 		while (!got)
@@ -67,7 +67,7 @@ class FileProcessor ##{
 	end #}}}
 
 	def extractOnelineMarkInfo rawline=-1
-		ptrn = Regexp.new('\*\*\w+\*\* +`*([^`]+)`*');
+		ptrn = Regexp.new('\*\*[\w|-]+\*\* +`*([^`]+)`*');
 		rawline = @currentLine-1 if (rawline==-1);
 		md = ptrn.match(getline(rawline));
 		if md

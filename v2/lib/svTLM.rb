@@ -1,5 +1,5 @@
-rhload 'lib/svMethod'
-rhload 'lib/svField'
+rhload 'lib/svMethod.rb'
+rhload 'lib/svField.rb'
 class SVTLM < SVField ##{
 	attr_accessor :tlmType;
 	attr_accessor :tlmName;
@@ -29,19 +29,39 @@ class SVTLM < SVField ##{
 		return;
 	end ##}}}
 
+
 	def addProcedures lines ##{{{
 		return if not __isImp__;
-		fn = 'write_'+@tlmSuffix;
+		fn = 'write';
+		fn += '_'+@tlmSuffix if (@tlmSuffix!='');
 		proto = 'void '+fn+'('+@transType+' _tr)';
 		@write = SVMethod.new(proto,@container);
 		@write.addBody(lines);
 	end ##}}}
-
 	"""
 	API to generate a string that to create a new TLM in SV.
 	"""
 	def createInSV ##{{{
 		line = @tlmName+' = new("'+@tlmName+'",this);';
+		return line;
+	end ##}}}
+	"""
+	the declaration code of SV, like:
+	uvm_analysis_imp #(transType,className) tlmName;
+	"""
+	def declareInSV ##{{{
+		line = 'uvm_analysis_';
+		if __isImp__
+			line+='imp';
+			line+='_'+@tlmSuffix if @tlmSuffix!='';
+		elsif @tlmType=='tlm-ap'
+			line+='port';
+		else
+			line+='export';
+		end
+		line+=' #('+@transType;
+		line+=','+@container.name if __isImp__;
+		line+=') '+@tlmName+';';
 		return line;
 	end ##}}}
 

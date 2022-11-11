@@ -1,14 +1,20 @@
-rhload 'lib/svMarkPool';
+rhload 'lib/database.rb';
+rhload 'lib/svMarkPool.rb';
+rhload 'lib/svClass.rb';
+rhload 'lib/svTLM.rb';
+rhload 'lib/svPackage.rb';
 
 class SVSupport < DataBase ##{
 
 	attr :svclasses;
+	attr :svpackages;
 	attr :fp;
 
 	def initialize _fp ##{{{
 		@svclasses = [];
+		@svpackages= [];
 		@fp = _fp;
-		@mkpool = SVMarkpool.new(@fp);
+		@mkpool = SVMarkPool.new(@fp);
 	end ##}}}
 
 	def currentClass ##{{{
@@ -18,9 +24,9 @@ class SVSupport < DataBase ##{
 
 	def __processClass__ mk ##{{{
 		svc = SVClass.new(mk[:name],mk[:uvmtype]); ## TODO
-		svc.tparam = mk[:tparam] if mk.exists?(:tparam);
-		svc.param  = mk[:param]  if mk.exists?(:param);
-		svc.base   = mk[:base]   if mk.exists?(:base);
+		svc.tparam = mk[:tparam] if mk.has_key?(:tparam);
+		svc.param  = mk[:param]  if mk.has_key?(:param);
+		svc.base   = mk[:base]   if mk.has_key?(:base);
 		@svclasses << svc;
 	end ##}}}
 	def __processFields__ mk ##{{{
@@ -29,14 +35,26 @@ class SVSupport < DataBase ##{
 	end ##}}}
 	def __processMethods__ mk ##{{{
 		cls = currentClass();
-		m = SVMethod.(mk[:proto],cls,mk[:mark]);
-		m.addBody(mk[:proc]) if (mk.exists?(:proc));
+		m = SVMethod.new(mk[:proto],cls,mk[:mark]);
+		m.addBody(mk[:proc]) if (mk.has_key?(:proc));
 		cls.addMethod(m);
 	end ##}}}
 	def __processTLMs__ mk ##{{{
 		tlm = SVTLM.new(mk[:mark]);
-		tlm.setup(mk[:proto].split());
-		tlm.addProcedures if (mk.exists?(:proc));
+		cls = currentClass();
+		setupString = mk[:proto].split(' ');
+		setupString << cls.name;
+		if mk[:mark]=='tlm-ai'
+			_tmp = setupString.shift();
+			setupString << _tmp;
+		end
+		tlm.setup(*setupString);
+		tlm.addProcedures if (mk.has_key?(:proc));
+		cls.addTLM(tlm);
+	end ##}}}
+	def __processPackage__ mk ##{{{
+		pkg = SVPackage.new(mk[:name],mk[:body]);
+		@svpackages << pkg;
 	end ##}}}
 
 	def processSource ##{{{
@@ -45,6 +63,7 @@ class SVSupport < DataBase ##{
 			__processFields__(mk)  if mk[:type]==:field;
 			__processMethods__(mk) if mk[:type]==:method;
 			__processTLMs__(mk)    if mk[:type]==:tlm;
+			__processPackage__(mk) if mk[:type]==:package;
 		end
 	end ##}}}
 

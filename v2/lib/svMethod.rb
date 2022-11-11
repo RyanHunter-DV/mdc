@@ -7,7 +7,7 @@ class SVMethod ##{
 	attr :returnType;
 	attr :builtinMarks;
 
-	def initialize p='',cls,mk='func' ##{{{
+	def initialize p='',cls=nil,mk='func' ##{{{
 		@container = cls;
 		@body = [];
 		__initBuiltinMarks__;
@@ -30,7 +30,7 @@ class SVMethod ##{
 		@builtinMarks = ['new','build','connect','run'];
 	end ##}}}
 	def __isBuiltIns__ mk ##{{{
-		return true if @builtinMarkss.include?(mk);
+		return true if @builtinMarks.include?(mk);
 		return false;
 	end ##}}}
 	"""
@@ -61,6 +61,7 @@ class SVMethod ##{
 			addBody(['super.new(name,parent);']);
 		else
 			addBody(['super.new(name);']);
+		end
 		return p;
 	end ##}}}
 	def __initFuncPhase__ mk ##{{{
@@ -69,10 +70,11 @@ class SVMethod ##{
 		addBody(['super.'+phase+'(phase);'])
 		return p;
 	end ##}}}
-	def __initTaskPhase__- mk ##{{{
+	def __initTaskPhase__ mk ##{{{
 		phase = mk+'_phase';
 		p = phase+'(uvm_phase phase)';
 		## no super.*phase for task now.
+		return p;
 	end ##}}}
 	def __initMethodType__ mk ##{{{
 		if /task/.match(mk)
@@ -143,7 +145,8 @@ class SVMethod ##{
 		bodyCodes = [];
 		bodyCodes.push *(prototype(:define));
 		@body.each do |l|
-			bodyCodes << l;
+			## for each body line, one incident is necessary
+			bodyCodes << "\t"+l;
 		end
 		bodyCodes << 'end'+@type.to_s;
 		return bodyCodes;
