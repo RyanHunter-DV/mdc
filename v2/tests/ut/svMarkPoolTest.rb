@@ -1,11 +1,21 @@
-require '../../lib/svMarkPool.rb'
-require '../../lib/fileProcessor.rb'
+#! /usr/bin/env ruby
+require 'rhload'
+cdir = File.dirname(File.absolute_path(__FILE__));
+$LOAD_PATH << cdir+'/../../';
+
+require 'lib/svMarkPool.rb'
+require 'lib/fileProcessor.rb'
 
 
-main();
 
 ## test dependent on file processor
 def main
-	fp = FileProcessor.new();
+	fn = 'test.md';
+	fp = FileProcessor.new(fn);
 	mkpool = SVMarkPool.new(fp);
+    mkpool.marks.each do |mk|
+        puts "mk: #{mk}"
+    end
 end
+
+main();

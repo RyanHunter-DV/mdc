@@ -1,6 +1,9 @@
-require '../../lib/svMethod.rb'
+#! /usr/bin/env ruby
 
-main();
+require 'rhload'
+cdir = File.dirname(File.absolute_path(__FILE__));
+$LOAD_PATH << cdir+'/../../';
+require 'lib/svMethod.rb'
 
 
 def main ##{
@@ -68,8 +71,8 @@ def testManualTasks ##{{{
 	## multiple prototype declaring
 	pline = [
 		'multLinePrototype (',
-		'input bit[1:0] a,',
-		'output bit[2:0] b',
+		"\tinput bit[1:0] a,",
+		"\toutput bit[2:0] b",
 		')'
 	];
 	m = __createSVMethod__(pline,mark);
@@ -80,9 +83,9 @@ end ##}}}
 
 def printResults n,m ##{{{
 	svcode = [];
-	svcode.push (*m.prototype);
+	svcode.push *m.prototype;
 	svcode << "// next for body declaration //";
-	svcode.push (*m.body);
+	svcode.push *m.body;
 	puts "[#{n}] test print";
 	svcode.each do |l|
 		puts l;
@@ -107,3 +110,5 @@ def __createSVMethod__ p,mk ##{{{
 	m = SVMethod.new(p,cls,mk);
 	return m;
 end ##}}}
+
+main();

@@ -1,12 +1,15 @@
 #! /usr/bin/env ruby
-require '../../lib/fileProcessor.rb'
 
-main();
+require 'rhload'
+cdir = File.dirname(File.absolute_path(__FILE__));
+$LOAD_PATH << cdir+'/../../';
+
+rhload 'lib/fileProcessor.rb'
+
 
 def main
 	fn = 'test.md';
 	fp = FileProcessor.new(fn);
-
 	__markTest__(fp);
 end
 
@@ -16,7 +19,7 @@ def __markTest__ fp
 	while (mark!='')
 		mark = fp.getNextMark;
 		puts "mark: #{mark}";
-		if (mark=='task')
+		if (mark=='func')
 			p = fp.extractOnelineMarkInfo;
 			fp.extractMultlineMarkInfo if (p=='');
 
@@ -26,7 +29,12 @@ def __markTest__ fp
 			method[:proc] = fp.extractMultlineMarkInfo;
 		end
 	end
-	puts "test task mark"
+	puts "test func mark"
 	puts "proto: #{method[:proto]}";
-	puts "body: #{method[:proc]}"
+	puts "body:"
+    puts method[:proc];
 end
+
+
+
+main();
