@@ -33,7 +33,7 @@ class MainEntry ##{
 		smb = SmartBuilder.new(db);
 		smb.optimizeDataBase();
 		## 4.generate target file.
-		gen = Generator.new(db,@options.source);
+		gen = Generator.new(db,@options.source,@options.tDir);
 		gen.publish();
 
 		return sig;

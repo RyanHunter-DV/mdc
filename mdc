@@ -1,4 +1,5 @@
 #! /usr/bin/env ruby
+
 useVersion = 'v2';
 require 'rhload';
 $TOOLHOME = File.dirname(File.absolute_path(__FILE__))+'/'+useVersion;
