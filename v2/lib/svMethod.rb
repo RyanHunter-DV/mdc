@@ -6,9 +6,12 @@ class SVMethod ##{
 	attr :type; ## task or func
 	attr :returnType;
 	attr :builtinMarks;
+	attr_accessor :name;
+	attr :noReturnType;
 
 	def initialize p='',cls=nil,mk='func' ##{{{
 		@container = cls;
+		@noReturnType = false;
 		@body = [];
 		__initBuiltinMarks__;
 		if __isBuiltIns__(mk)
@@ -53,6 +56,7 @@ class SVMethod ##{
 		return __initTaskPhase__(mk) if mk=='run';
 	end ##}}}
 	def __initNew__ ##{{{
+		@noReturnType = true;
 		p = 'new(string name="';
 		p += @container.name+'"';
 		p += ',uvm_component parent=null' if @container.isComponent;
@@ -61,7 +65,7 @@ class SVMethod ##{
 			addBody(['super.new(name,parent);']);
 		else
 			addBody(['super.new(name);']);
-		end
+        end
 		return p;
 	end ##}}}
 	def __initFuncPhase__ mk ##{{{
@@ -74,7 +78,7 @@ class SVMethod ##{
 		phase = mk+'_phase';
 		p = phase+'(uvm_phase phase)';
 		## no super.*phase for task now.
-		return p;
+        return p;
 	end ##}}}
 	def __initMethodType__ mk ##{{{
 		if /task/.match(mk)
@@ -101,13 +105,14 @@ class SVMethod ##{
 	def __initPrototype__ p ##{{{
 		@prototype = [];
 		@returnType= '';
+		@name = '';
 		if p.is_a?(String)
 			@prototype << p;
 		else
 			@prototype.push(*p);
 		end
-		if @type==:function
-			md = /(\w+) +/.match(@prototype[0]);
+		if @type==:function and @noReturnType==false
+			md = /([\w|_]+) +/.match(@prototype[0]);
 			if md==nil
 				puts "Error, no return type detected for a function";
 				return;
@@ -115,6 +120,8 @@ class SVMethod ##{
 			@returnType = md[1];
 			@prototype[0].sub!(md[0],'');
 		end
+		md = /([\w|_]+) *\(/.match(@prototype[0]);
+		@name = md[1];
 		return;
 	end ##}}}
 
@@ -145,7 +152,6 @@ class SVMethod ##{
 		bodyCodes = [];
 		bodyCodes.push *(prototype(:define));
 		@body.each do |l|
-			## for each body line, one incident is necessary
 			bodyCodes << "\t"+l;
 		end
 		bodyCodes << 'end'+@type.to_s;

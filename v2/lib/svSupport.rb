@@ -6,20 +6,22 @@ rhload 'lib/svPackage.rb';
 
 class SVSupport < DataBase ##{
 
-	attr :svclasses;
+	attr_accessor :classes;
+	attr_accessor :codeType;
 	attr :svpackages;
 	attr :fp;
 
-	def initialize _fp ##{{{
-		@svclasses = [];
+	def initialize _fp,ct ##{{{
+		@classes = [];
 		@svpackages= [];
 		@fp = _fp;
+		@codeType = ct;
 		@mkpool = SVMarkPool.new(@fp);
 	end ##}}}
 
 	def currentClass ##{{{
-		idx = @svclasses.length() - 1;
-		return @svclasses[idx];
+		idx = @classes.length() - 1;
+		return @classes[idx];
 	end ##}}}
 
 	def __processClass__ mk ##{{{
@@ -27,7 +29,7 @@ class SVSupport < DataBase ##{
 		svc.tparam = mk[:tparam] if mk.has_key?(:tparam);
 		svc.param  = mk[:param]  if mk.has_key?(:param);
 		svc.base   = mk[:base]   if mk.has_key?(:base);
-		@svclasses << svc;
+		@classes << svc;
 	end ##}}}
 	def __processFields__ mk ##{{{
 		cls = currentClass();
