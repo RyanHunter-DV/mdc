@@ -49,8 +49,12 @@ class SVClass ##{
 
 	def declareCode ##{{{
 		l = 'class '+@name;
-		l += ' #('+@param if @param!='';
-		l += ' ,type '+@tparam if @tparam!='';
+		l += ' #(' if @param!='' or @tparam!='';
+		l += ' '+@param if @param!='';
+		if @tparam!=''
+			l+=',' if @param!='';
+			l+=' type '+@tparam;
+		end
 		l += ')' if @param!='' or @tparam!='';
 		l += ' extends '+@base if @base!='';
 		l += ';';
