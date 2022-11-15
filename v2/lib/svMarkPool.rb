@@ -7,6 +7,7 @@ class SVMarkPool ##{
 	attr :fp;
 	attr :currentClassMark;
 	attr :currentMethodMark;
+	attr :currentPkgMark;
 	attr :methodmarks;
 	attr :builtinMethods;
 	attr :fieldmarks;
@@ -42,6 +43,7 @@ class SVMarkPool ##{
 			mk = __processMark__(mark);
 			@marks << mk if mk[:type]!=:unknow;
 			@currentClassMark = mk if (mk[:type]==:svclass);
+			@currentPkgMark   = mk if (mk[:type]==:package);
 			@currentMethodMark= mk if (mk[:type]==:method);
 		end
 	end ##}}}
@@ -50,6 +52,22 @@ class SVMarkPool ##{
 		mk = {};
 		mk[:mark] = mark;
 		mk[:type] = __getMarkType__(mark);
+
+		if (mk[:type]==:package)
+			mk[:name] = @fp.extractOnelineMarkInfo;
+			mk[:body] = [];
+			return mk;
+		end
+		if (mk[:type]==:include)
+			b = @fp.extractMultlineMarkInfo;
+			@currentPkgMark[:body] << 'include '+b.join(";");
+			return mk;
+		end
+		if (mk[:type]==:import)
+			b = @fp.extractMultlineMarkInfo;
+			@currentPkgMark[:body] << 'import '+b.join(";");
+			return mk;
+		end
 		if (mk[:type] == :svclass)
 			mk[:uvmtype] = '';
 			mk[:uvmtype] = mk[:mark] if (@uvmmarks.include?(mk[:mark]));
@@ -99,6 +117,9 @@ class SVMarkPool ##{
 		return :field   if @fieldmarks.include?(mark);
 		return :method  if @methodmarks.include?(mark);
 		return :tlm     if @tlmmarks.include?(mark);
+		return :package if mark=='package';
+		return :include if mark=='include';
+		return :import  if mark=='import';
 		return :unknow;
 	end ##}}}
 end ##}

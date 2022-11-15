@@ -9,12 +9,12 @@ class SVSupport < DataBase ##{
 	attr_accessor :classes;
 	attr_accessor :codeType;
 	attr_accessor :nullclass;
-	attr :svpackages;
+	attr :packages;
 	attr :fp;
 
 	def initialize _fp,ct ##{{{
 		@classes = [];
-		@svpackages= [];
+		@packages= [];
 		@fp = _fp;
 		@codeType = ct;
 		@mkpool = SVMarkPool.new(@fp);
@@ -59,7 +59,7 @@ class SVSupport < DataBase ##{
 	end ##}}}
 	def __processPackage__ mk ##{{{
 		pkg = SVPackage.new(mk[:name],mk[:body]);
-		@svpackages << pkg;
+		@packages << pkg;
 	end ##}}}
 
 	def processSource ##{{{

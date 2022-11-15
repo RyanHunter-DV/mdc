@@ -38,12 +38,33 @@ class SVPackage ##{
 		raw.each do |rl|
 			splits = rl.split(' ');
 			type = splits[0];
-			splits[1].split("\n").each do |v|
+			next if splits.length()<=1;
+			splits[1].split(';').each do |v|
 				item = {:type=>type,:value=>v};
 				@body << item;
 			end
 		end
 	end ##}}}
 
+	def declareCode ##{{{
+		p = 'package '+@name+';';
+		return p;
+	end ##}}}
+
+	def interfaceCode ##{{{
+		l = '`include "'+@interface[:value]+'"';
+		return l;
+	end ##}}}
+	def bodyCode ##{{{
+		cnts = [];
+		@body.each do |b|
+			if b[:type]=='include'
+				cnts << '`include "'+b[:value]+'"' if b[:value]!="" or (not /^\/\//.match(b[:value]));
+			else
+				cnts << 'import '+b[:value]+';' if b[:value]!="";
+			end
+		end
+		return cnts;
+	end ##}}}
 
 end ##}

@@ -56,6 +56,16 @@ class Generator ##{
 			cnts.push(*cls.methodsCode);
 		end
 		cnts = __generateNullClass__ if @db.classes.length()==0;
+		@db.packages.each do |p|
+			cnts << p.interfaceCode;
+			cnts << p.declareCode;
+			p.bodyCode.each do |cl|
+				cnts << "\t"+cl;
+			end
+			if @db.codeType==:SV
+				cnts<<"endpackage";
+			end
+		end
 		return cnts;
 	end ##}}}
 	def __generateFileTailer__ ##{{{
