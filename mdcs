@@ -8,7 +8,7 @@ def main ##{{{
 	sp = ARGV.shift;
 	tp = ARGV.shift;
 	## puts "sourcePath: #{sp}, targetPath: #{tp}";
-	output = `find #{sp}/ -name "*.svh.md"`;
+	output = `find #{sp}/ -name "*.sv*.md"`;
 	files = output.split("\n");
 	## puts files;
 
