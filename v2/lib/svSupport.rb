@@ -8,6 +8,7 @@ class SVSupport < DataBase ##{
 
 	attr_accessor :classes;
 	attr_accessor :codeType;
+	attr_accessor :nullclass;
 	attr :svpackages;
 	attr :fp;
 
@@ -17,10 +18,12 @@ class SVSupport < DataBase ##{
 		@fp = _fp;
 		@codeType = ct;
 		@mkpool = SVMarkPool.new(@fp);
+		@nullclass= SVClass.new('null');
 	end ##}}}
 
 	def currentClass ##{{{
 		idx = @classes.length() - 1;
+		return @nullclass if idx < 0;
 		return @classes[idx];
 	end ##}}}
 

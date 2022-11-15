@@ -11,9 +11,9 @@ class SVClass ##{
 	attr :uvmtype;
 	attr :comptypes;
 
-	def initialize n,uvmt##{{{
+	def initialize n,uvmt=''##{{{
 		@name = n.to_s;
-		@uvmtype = uvmt.to_sym;
+		@uvmtype = uvmt.to_sym if uvmt!='';
 		@tparam = '';
 		@param  = '';
 		@base   = '';

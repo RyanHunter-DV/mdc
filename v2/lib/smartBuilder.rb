@@ -53,7 +53,7 @@ class SmartBuilder ##{
 		end
 	end ##}}}
 
-	def setupDefaultMethod mn,c ##{{{
+	def __setupDefaultMethod__ mn,c ##{{{
 		m = SVMethod.new('',c,mn);
 		c.addMethod(m);
 	end ##}}}

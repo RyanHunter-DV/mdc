@@ -1,0 +1,26 @@
+#! /usr/bin/env ruby
+
+require 'rhload';
+$TOOLHOME = File.dirname(File.absolute_path(__FILE__));
+$LOAD_PATH << $TOOLHOME;
+
+def main ##{{{
+	sp = ARGV.shift;
+	tp = ARGV.shift;
+	## puts "sourcePath: #{sp}, targetPath: #{tp}";
+	output = `find #{sp}/ -name "*.svh.md"`;
+	files = output.split("\n");
+	## puts files;
+
+	files.each do |f|
+		puts "start converting file(#{f}) ... ...";
+		output = `mdc -s #{f} -t #{tp}`;
+		puts output;
+	end
+
+
+	return 0;
+end ##}}}
+
+$SIG = main();
+exit $SIG;

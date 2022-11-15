@@ -1,0 +1,3 @@
+mdcs:
+the multiple execution of mdc, by specifying the source path, and target path will automatically
+call mdc parallely to generate all sourcePath/*.svh.md to targetPath/*.svh

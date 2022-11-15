@@ -30,6 +30,13 @@ class Generator ##{
 		cnts << @macroMark+'define '+mCnt
 		return cnts;
 	end ##}}}
+	def __generateNullClass__ ##{{{
+		cnts = [];
+		@db.nullclass.bodyCode.each do |cl|
+			cnts << cl;
+		end
+		return cnts;
+	end ##}}}
 	def __generateFileContents__ ##{{{
 		cnts = [];
 		@db.classes.each do |cls|
@@ -44,6 +51,7 @@ class Generator ##{
 			end
 			cnts.push(*cls.methodsCode);
 		end
+		cnts = __generateNullClass__ if @db.classes.length()==0;
 		return cnts;
 	end ##}}}
 	def __generateFileTailer__ ##{{{
@@ -53,7 +61,9 @@ class Generator ##{
 	def publish ##{{{
 		cnts = [];
 		cnts.push(*__generateFileHeader__);
+		cnts << "";
 		cnts.push(*__generateFileContents__);
+		cnts << "";
 		cnts.push(*__generateFileTailer__);
 		fh = File.open(@tDir+'/'+@tFile,'w');
 		cnts.each do |l|

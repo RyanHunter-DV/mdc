@@ -59,9 +59,9 @@ class SVMethod ##{
 		@noReturnType = true;
 		p = 'new(string name="';
 		p += @container.name+'"';
-		p += ',uvm_component parent=null' if @container.isComponent;
+		p += ',uvm_component parent=null' if @container.isComponent?;
 		p += ')';
-		if @container.isComponent
+		if @container.isComponent?
 			addBody(['super.new(name,parent);']);
 		else
 			addBody(['super.new(name);']);
