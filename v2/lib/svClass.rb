@@ -14,8 +14,9 @@ class SVClass ##{
 
 	def initialize n,mk,uvmt=''##{{{
 		@name = n.to_s;
-		@type = mk if mk.to_s=='interface';
-		@uvmtype = uvmt.to_sym if uvmt!='';
+		@type = mk;
+		## @uvmtype = uvmt.to_sym if uvmt!='';
+		@uvmtype = uvmt.to_s if uvmt!='';
 		@tparam = '';
 		@param  = '';
 		@base   = '';
@@ -36,7 +37,7 @@ class SVClass ##{
     end ##}}}
 	def has? n ##{{{
 		@methods.each do |m|
-			return true if m.name = n;
+			return true if m.name == n;
 		end
 		return false;
 	end ##}}}
