@@ -18,7 +18,7 @@ class SVSupport < DataBase ##{
 		@fp = _fp;
 		@codeType = ct;
 		@mkpool = SVMarkPool.new(@fp);
-		@nullclass= SVClass.new('null');
+		@nullclass= SVClass.new('null','class');
 	end ##}}}
 
 	def currentClass ##{{{
@@ -28,7 +28,7 @@ class SVSupport < DataBase ##{
 	end ##}}}
 
 	def __processClass__ mk ##{{{
-		svc = SVClass.new(mk[:name],mk[:uvmtype]); ## TODO
+		svc = SVClass.new(mk[:name],mk[:mark],mk[:uvmtype]); ## TODO
 		svc.tparam = mk[:tparam] if mk.has_key?(:tparam);
 		svc.param  = mk[:param]  if mk.has_key?(:param);
 		svc.base   = mk[:base]   if mk.has_key?(:base);

@@ -30,7 +30,7 @@ class SVMarkPool ##{
 		@fieldmarks = ['field'];
 		@tlmmarks  = ['tlm-ap','tlm-ai','tlm-ae'];
 		@uvmmarks = ['transaction','object','sequence','component','driver','agent','monitor','env','test','sequencer'];
-		@classmarks = ['class'];
+		@classmarks = ['class','interface'];
 		@classmarks.push(*@uvmmarks);
 	end ##}}}
 

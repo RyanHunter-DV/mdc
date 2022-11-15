@@ -45,7 +45,11 @@ class Generator ##{
 				cnts << "\t"+cl;
 			end
 			if @db.codeType==:SV
-				cnts << "endclass";
+				if cls.type=='interface'
+					cnts<<"endinterface";
+				else
+					cnts << "endclass";
+				end
 			else
 				cnts << "};"
 			end

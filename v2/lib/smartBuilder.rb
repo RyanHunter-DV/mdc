@@ -6,6 +6,7 @@ class SmartBuilder ##{
 
 	def optimizeDataBase ##{{{
 		@db.classes.each do |svc|
+			next if svc.type=='interface';
 			__builtinMethodsBuild__(svc);
 			__builtinClassBuild__(svc);
 		end

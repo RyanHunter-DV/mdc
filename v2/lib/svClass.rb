@@ -8,11 +8,13 @@ class SVClass ##{
     attr_accessor :fields;
     attr_accessor :methods;
     attr_accessor :tlms;
+	attr_accessor :type;
 	attr :uvmtype;
 	attr :comptypes;
 
-	def initialize n,uvmt=''##{{{
+	def initialize n,mk,uvmt=''##{{{
 		@name = n.to_s;
+		@type = mk if mk.to_s=='interface';
 		@uvmtype = uvmt.to_sym if uvmt!='';
 		@tparam = '';
 		@param  = '';
@@ -48,15 +50,26 @@ class SVClass ##{
 	end ##}}}
 
 	def declareCode ##{{{
-		l = 'class '+@name;
-		l += ' #(' if @param!='' or @tparam!='';
-		l += ' '+@param if @param!='';
-		if @tparam!=''
-			l+=',' if @param!='';
-			l+=' type '+@tparam;
+		l='';p='';
+		if @type=='interface'
+			l = 'interface '+@name;
+		else
+			l = 'class '+@name;
 		end
-		l += ')' if @param!='' or @tparam!='';
+		p = ' #(' if @param!='' or @tparam!='';
+		p += ' '+@param if @param!='';
+		if @tparam!=''
+			p+=',' if @param!='';
+			p+=' type '+@tparam;
+		end
+		p += ')' if @param!='' or @tparam!='';
+		if @type=='interface'
+			l.sub!(/\(/,"#{p}(");
+		else
+			l += p;
+		end
 		l += ' extends '+@base if @base!='';
+		## l += '()' if @type=='interface';
 		l += ';';
 		return l;
 	end ##}}}
