@@ -57,13 +57,22 @@ class SVPackage ##{
 	end ##}}}
 	def bodyCode ##{{{
 		cnts = [];
-		@body.each do |b|
-			if b[:type]=='include'
-				cnts << '`include "'+b[:value]+'"' if b[:value]!="" or (not /^\/\//.match(b[:value]));
-			else
-				cnts << 'import '+b[:value]+';' if b[:value]!="";
-			end
-		end
+		@body.each do |b| ##{
+			if b[:type]=='include' ##{
+				if (/\w+/.match(b[:value]))
+					cnts<<'`include "'+b[:value]+'"';
+				else
+					cnts<<b[:value];
+				end
+			##}
+			else ##{
+				if (/\w+/.match(b[:value]))
+					cnts<<'import '+b[:value]+';';
+				else
+					cnts<<b[:value];
+				end
+			end ##}
+		end ##}
 		return cnts;
 	end ##}}}
 
