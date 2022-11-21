@@ -112,7 +112,7 @@ class SVMethod ##{
 			@prototype.push(*p);
 		end
 		if @type==:function and @noReturnType==false
-			md = /([\w|_]+) +/.match(@prototype[0]);
+			md = /(\S+) +/.match(@prototype[0]);
 			if md==nil
 				puts "Error, no return type detected for a function";
 				return;
