@@ -27,7 +27,9 @@ class SmartBuilder ##{
 		else
 			decl+='component_utils';
 		end
-		c.addField decl+'_begin('+c.name+')';
+		classfield = c.name;
+		classfield = c.parameterizedClassName if c.param!=''or c.tparam!='';
+		c.addField decl+'_begin('+classfield+')';
 		c.addField decl+'_end';
 
 	end ##}}}

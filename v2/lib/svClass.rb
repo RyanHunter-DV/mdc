@@ -50,6 +50,23 @@ class SVClass ##{
 		return true;
 	end ##}}}
 
+	## this API returns the class name with parameter quoted, like:
+	## MyTestClass#(AW,DW)
+	def parameterizedClassName ##{{{
+		ptrn = Regexp.new(/([\w|_]+) *=/);
+		pname = @name;
+		param = '';
+		src  = @param+','+@tparam;
+		md = ptrn.match(src);
+		while (md!=nil) do
+			param += ',' if param!='';
+			param += md[1];
+			src.sub!(ptrn,'');
+			md = ptrn.match(src);
+		end
+		pname += '#('+param+')' if param!='';
+		return pname;
+	end ##}}}
 	def declareCode ##{{{
 		l='';p='';
 		if @type=='interface'
