@@ -60,7 +60,7 @@ class SVTLM < SVField ##{
 			line+='export';
 		end
 		line+=' #('+@transType;
-		line+=','+@container.name if __isImp__;
+		line+=','+@container.parameterizedClassName if __isImp__;
 		line+=') '+@tlmName+';';
 		return line;
 	end ##}}}

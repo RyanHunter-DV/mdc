@@ -102,8 +102,8 @@ class SVMarkPool ##{
 		end
 		if (mk[:type]==:tlm)
 			mk[:proto] = @fp.extractOnelineMarkInfo;
-			proc = @fp.extractMultlineMarkInfo;
-			mk[:proc] = proc if (not proc.empty?);
+			procs = @fp.extractMultlineMarkInfo;
+			mk[:proc] = procs if (not procs.empty?);
 			return mk;
 		end
 		if (mk[:type]==:field)

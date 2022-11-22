@@ -52,7 +52,10 @@ class SVPackage ##{
 	end ##}}}
 
 	def interfaceCode ##{{{
-		l = '`include "'+@interface[:value]+'"';
+        l = '';
+        if @interface.has_key?(:value)
+		    l = '`include "'+@interface[:value]+'"';
+        end
 		return l;
 	end ##}}}
 	def bodyCode ##{{{

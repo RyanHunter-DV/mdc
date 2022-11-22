@@ -48,13 +48,13 @@ class SVSupport < DataBase ##{
 		tlm = SVTLM.new(mk[:mark]);
 		cls = currentClass();
 		setupString = mk[:proto].split(' ');
-		setupString << cls.name;
+		setupString << cls;
 		if mk[:mark]=='tlm-ai'
 			_tmp = setupString.shift();
 			setupString << _tmp;
 		end
 		tlm.setup(*setupString);
-		tlm.addProcedures if (mk.has_key?(:proc));
+		tlm.addProcedures mk[:proc] if (mk.has_key?(:proc));
 		cls.addTLM(tlm);
 	end ##}}}
 	def __processPackage__ mk ##{{{
