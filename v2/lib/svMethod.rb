@@ -77,7 +77,7 @@ class SVMethod ##{
 	def __initTaskPhase__ mk ##{{{
 		phase = mk+'_phase';
 		p = phase+'(uvm_phase phase)';
-		## no super.*phase for task now.
+		addBody(['super.'+phase+'(phase);'])
         return p;
 	end ##}}}
 	def __initMethodType__ mk ##{{{
