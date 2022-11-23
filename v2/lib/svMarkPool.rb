@@ -71,6 +71,7 @@ class SVMarkPool ##{
 		if (mk[:type] == :svclass)
 			mk[:uvmtype] = '';
 			mk[:uvmtype] = mk[:mark] if (@uvmmarks.include?(mk[:mark]));
+			mk[:uvmtype] = 'sequence_item' if mk[:uvmtype]=='transaction';
 			mk[:name] = @fp.extractOnelineMarkInfo;
 			return mk;
 		end

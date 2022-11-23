@@ -104,6 +104,9 @@ class SVClass ##{
 		@methods.each do |m|
 			cnts.push(*m.prototype);
 		end
+		@tlms.each do |tlm|
+			cnts.push(*tlm.write.prototype) if tlm.write;
+		end
 		return cnts;
 	end ##}}}
 
@@ -114,6 +117,9 @@ class SVClass ##{
 		cnts = [];
 		@methods.each do |m|
 			cnts.push(*m.body);
+		end
+		@tlms.each do |tlm|
+			cnts.push(*tlm.write.body) if tlm.write;
 		end
 		return cnts;
 	end ##}}}

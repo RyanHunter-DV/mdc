@@ -35,7 +35,7 @@ class SVTLM < SVField ##{
 		fn = 'write';
 		fn += '_'+@tlmSuffix if (@tlmSuffix!='');
 		proto = 'void '+fn+'('+@transType+' _tr)';
-		@write = SVMethod.new(proto,@container);
+		@write = SVMethod.new(proto,@container,'vfunc');
 		@write.addBody(lines);
 	end ##}}}
 	"""
