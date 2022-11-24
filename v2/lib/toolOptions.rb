@@ -1,6 +1,8 @@
 require 'optparse'
 class ToolOptions ##{
 	attr_accessor :source;
+	attr_accessor :sourcePath;
+	attr_accessor :targetPath;
 	attr_accessor :help;
 	attr_accessor :tDir;
 
@@ -17,8 +19,15 @@ class ToolOptions ##{
 			opts.on('-s','--source=FILE',"specifying a source file") do |f|
 				@source = f;
 			end
-			opts.on('-t','--targetDir=FILE',"specifying a target directory") do |d|
-				@tDir = d;
+			#deprecated
+			#opts.on('-o','--targetDir=FILE',"specifying a target directory") do |d|
+				#@tDir = d;
+			#end
+			opts.on('-p','--sourcePath=PATH',"specifying a source path") do |p|
+				@sourcePath = p;
+			end
+			opts.on('-t','--targetPath=PATH',"specifying a target path") do |p|
+				@targetPath = p;
 			end
 		end.parse!
 	end ##}}}
