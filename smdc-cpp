@@ -4,7 +4,7 @@ require 'rhload';
 $TOOLHOME = File.dirname(File.absolute_path(__FILE__))+'/'+useVersion;
 $LOAD_PATH << $TOOLHOME;
 
-rhload 'lib/smdc-rb/mainEntry.rb';
+rhload 'lib/smdc-cpp/mainEntry.rb';
 
 e = MainEntry.new();
 $SIG = e.run();

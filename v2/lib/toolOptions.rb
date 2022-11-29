@@ -35,6 +35,8 @@ class ToolOptions ##{
 	def initialize
 		@help   = false;
 		@source = '';
+		@sourcePath = '.';
+		@targetPath = '.';
 		__setupOptionParser;
 	end
 
