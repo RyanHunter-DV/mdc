@@ -8,6 +8,8 @@ class ToolOptions ##{
 
 	def __setupDefaultOption__ ##{{{
 		@tDir = '.';
+		@sourcePath = '.';
+		@targetPath = '.';
 	end ##}}}
 
 	def __setupOptionParser ##{{{
@@ -19,10 +21,9 @@ class ToolOptions ##{
 			opts.on('-s','--source=FILE',"specifying a source file") do |f|
 				@source = f;
 			end
-			#deprecated
-			#opts.on('-o','--targetDir=FILE',"specifying a target directory") do |d|
-				#@tDir = d;
-			#end
+			opts.on('-o','--targetDir=FILE',"specifying a target directory") do |d|
+				@tDir = d;
+			end
 			opts.on('-p','--sourcePath=PATH',"specifying a source path") do |p|
 				@sourcePath = p;
 			end
@@ -35,8 +36,7 @@ class ToolOptions ##{
 	def initialize
 		@help   = false;
 		@source = '';
-		@sourcePath = '.';
-		@targetPath = '.';
+
 		__setupOptionParser;
 	end
 
