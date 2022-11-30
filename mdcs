@@ -41,8 +41,8 @@ def main ##{{{
 
 	files.each do |f|
 		puts "start converting file(#{f}) ... ...";
-		sroot = sp;
-		troot = tp;
+		sroot = sp.dup;
+		troot = tp.dup;
 		tdir = File.dirname(f);
 		tfile= File.basename(f);
 		sroot.sub!(/\/ *$/,'');
@@ -52,7 +52,7 @@ def main ##{{{
 		tfile = File.join(tdir,tfile);
 		__generateDirRecursively__(tfile);
 
-		output = `mdc -s #{f} -t #{tp}`;
+		output = `mdc -s #{f} -o #{tdir}`;
 		puts output;
 	end
 	return 0;
