@@ -4,6 +4,33 @@ require 'rhload';
 $TOOLHOME = File.dirname(File.absolute_path(__FILE__));
 $LOAD_PATH << $TOOLHOME;
 
+
+def __changeSrcFileNameToTarget__ fn ##{{{
+	md = /src-(.*)\.md/.match(fn);
+	return fn if not md;
+	return md[1];
+end ##}}}
+def __generateDirRecursively__ full ##{{{
+	toCreate = [];
+	p = File.dirname(full);
+	existed = false;
+	while (existed==false) do
+		if (Dir.exists?(p))
+			existed = true;
+			break;
+		end
+		toCreate << p;
+		p = File.dirname(p);
+	end
+	toCreate.reverse.each do |np|
+		puts "creating dir: #{np}";
+		Dir.mkdir np;
+	end
+	return;
+end ##}}}
+
+
+
 def main ##{{{
 	sp = ARGV.shift;
 	tp = ARGV.shift;
@@ -14,11 +41,20 @@ def main ##{{{
 
 	files.each do |f|
 		puts "start converting file(#{f}) ... ...";
+		sroot = sp;
+		troot = tp;
+		tdir = File.dirname(f);
+		tfile= File.basename(f);
+		sroot.sub!(/\/ *$/,'');
+		ptrn = Regexp.new("#{sroot}");
+		tdir.sub!(ptrn,troot);
+		tfile = __changeSrcFileNameToTarget__(tfile);
+		tfile = File.join(tdir,tfile);
+		__generateDirRecursively__(tfile);
+
 		output = `mdc -s #{f} -t #{tp}`;
 		puts output;
 	end
-
-
 	return 0;
 end ##}}}
 
