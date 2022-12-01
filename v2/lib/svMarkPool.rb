@@ -127,6 +127,7 @@ class SVMarkPool ##{
 		return :package if mark=='package';
 		return :include if mark=='include';
 		return :import  if mark=='import';
+		return :head    if mark=='head';
 		return :unknow;
 	end ##}}}
 end ##}
