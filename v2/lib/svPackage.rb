@@ -3,6 +3,7 @@ class SVPackage ##{
 	attr_accessor :name;
 	attr_accessor :body;
 	attr_accessor :interface;
+	attr_accessor :head; ## it's the very first of includes, even before the interface
 
 	def initialize n,rawBody ##{{{
 		__initFields__(n);
@@ -14,12 +15,13 @@ class SVPackage ##{
 		item = {:type=>'import',:value=>'uvm_pkg::*'};
 		@body.unshift(item);
 		item = {:type=>'include',:value=>'uvm_macros.svh'};
-		@body.unshift(item);
+		@head << item;
 	end ##}}}
 	def __initFields__ n ##{{{
 		@name = n;
 		@body = [];
 		@interface = {};
+		@head = [];
 	end ##}}}
 	def __matchInterfaceFile__ f ##{{{
 		return true if /If\.sv/.match(f) or /Interface\.sv/.match(f);
@@ -50,7 +52,15 @@ class SVPackage ##{
 		p = 'package '+@name+';';
 		return p;
 	end ##}}}
-
+	def headCode ##{{{
+		cnts = [];
+		@head.each do |h| ##{
+			## only include type can be added in head, so here won't adjust
+			## the type of head item.
+			cnts << h[:value];
+		end ##}
+		return cnts;
+	end ##}}}
 	def interfaceCode ##{{{
         l = '';
         if @interface.has_key?(:value)
