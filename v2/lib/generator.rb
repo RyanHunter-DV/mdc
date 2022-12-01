@@ -57,6 +57,7 @@ class Generator ##{
 		end
 		cnts = __generateNullClass__ if @db.classes.length()==0;
 		@db.packages.each do |p|
+			cnts << (*p.headCode);
 			cnts << p.interfaceCode if p.interfaceCode!='';
 			cnts << p.declareCode;
 			p.bodyCode.each do |cl|
