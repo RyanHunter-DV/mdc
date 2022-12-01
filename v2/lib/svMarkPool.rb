@@ -70,7 +70,7 @@ class SVMarkPool ##{
 			return mk;
 		end
 		if (mk[:type]==:head)
-			b = @fpextractMultlineMarkInfo;
+			b = @fp.extractMultlineMarkInfo;
 			@currentPkgMark[:head] << 'include '+b.join(";");
 			return mk;
 		end
