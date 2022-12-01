@@ -58,7 +58,7 @@ class SVSupport < DataBase ##{
 		cls.addTLM(tlm);
 	end ##}}}
 	def __processPackage__ mk ##{{{
-		pkg = SVPackage.new(mk[:name],mk[:body]);
+		pkg = SVPackage.new(mk[:name],mk[:body],mk[:head]);
 		@packages << pkg;
 	end ##}}}
 
