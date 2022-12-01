@@ -69,7 +69,7 @@ class SVPackage ##{
 		@head.each do |h| ##{
 			## only include type can be added in head, so here won't adjust
 			## the type of head item.
-			cnts << h[:value];
+			cnts << '`include "'+h[:value]+'"';
 		end ##}
 		return cnts;
 	end ##}}}
