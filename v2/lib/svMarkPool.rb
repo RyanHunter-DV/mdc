@@ -56,6 +56,7 @@ class SVMarkPool ##{
 		if (mk[:type]==:package)
 			mk[:name] = @fp.extractOnelineMarkInfo;
 			mk[:body] = [];
+			mk[:head] = [];
 			return mk;
 		end
 		if (mk[:type]==:include)
@@ -66,6 +67,11 @@ class SVMarkPool ##{
 		if (mk[:type]==:import)
 			b = @fp.extractMultlineMarkInfo;
 			@currentPkgMark[:body] << 'import '+b.join(";");
+			return mk;
+		end
+		if (mk[:type]==:head)
+			b = @fpextractMultlineMarkInfo;
+			@currentPkgMark[:head] << 'include '+b.join(";");
 			return mk;
 		end
 		if (mk[:type] == :svclass)
