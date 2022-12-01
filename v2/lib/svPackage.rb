@@ -5,9 +5,10 @@ class SVPackage ##{
 	attr_accessor :interface;
 	attr_accessor :head; ## it's the very first of includes, even before the interface
 
-	def initialize n,rawBody ##{{{
+	def initialize n,rawBody,rawHead ##{{{
 		__initFields__(n);
 		__assemblePackageBody__(rawBody);
+		__assemblePackageHead__(rawHead);
 		__filterInterfaceInclude__;
 		__insertBuiltinItemsToBody__;
 	end ##}}}
@@ -15,7 +16,7 @@ class SVPackage ##{
 		item = {:type=>'import',:value=>'uvm_pkg::*'};
 		@body.unshift(item);
 		item = {:type=>'include',:value=>'uvm_macros.svh'};
-		@head << item;
+		@head.unshift(item);
 	end ##}}}
 	def __initFields__ n ##{{{
 		@name = n;
@@ -47,6 +48,17 @@ class SVPackage ##{
 			end
 		end
 	end ##}}}
+	def __assemblePackageHead__ raw ##{{{
+		raw.each do |rl|
+			splits = rl.split(' ');
+			type = splits[0]
+			next if splits.length()<=1;
+			splits[1].split(';').each do |v|
+				item = {:type=>'include',:value=>v};
+				@head<<item;
+			end
+		end
+	end##}}}
 
 	def declareCode ##{{{
 		p = 'package '+@name+';';
