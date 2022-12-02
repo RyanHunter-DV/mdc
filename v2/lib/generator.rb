@@ -37,7 +37,7 @@ class Generator ##{
 		mCnt = @tFile.sub(/\./,'__');
 		cnts << @macroMark+'ifndef '+mCnt;
 		cnts << @macroMark+'define '+mCnt;
-		cnts.push(*__copyrighAndDeclaration__);
+		cnts.push(*__copyrightAndDeclaration__);
 		return cnts;
 	end ##}}}
 	def __generateNullClass__ ##{{{
