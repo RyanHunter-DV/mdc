@@ -38,6 +38,10 @@ class SVSupport < DataBase ##{
 		cls = currentClass();
 		cls.addField(mk[:fields]);
 	end ##}}}
+	def __processFieldut__ mk ##{{{
+		cls.currentClass();
+		cls.addFieldut(mk[:fieldut]);
+	end ##}}}
 	def __processMethods__ mk ##{{{
 		cls = currentClass();
 		m = SVMethod.new(mk[:proto],cls,mk[:mark]);
@@ -66,6 +70,7 @@ class SVSupport < DataBase ##{
 		@mkpool.marks.each do |mk|
 			__processClass__(mk)   if mk[:type]==:svclass;
 			__processFields__(mk)  if mk[:type]==:field;
+			__processFieldut__(mk)  if mk[:type]==:fieldut;
 			__processMethods__(mk) if mk[:type]==:method;
 			__processTLMs__(mk)    if mk[:type]==:tlm;
 			__processPackage__(mk) if mk[:type]==:package;
