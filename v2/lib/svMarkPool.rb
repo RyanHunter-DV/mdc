@@ -117,6 +117,10 @@ class SVMarkPool ##{
 			mk[:fields] = @fp.extractMultlineMarkInfo;
 			return mk;
 		end
+		if (mk[:type]==:fieldut)
+			mk[:fieldut] = @fp.extractMultlineMarkInfo;
+			return mk;
+		end
 		return mk;
 	end ##}}}
 	def __getMarkType__ mark ##{{{
@@ -128,6 +132,7 @@ class SVMarkPool ##{
 		return :include if mark=='include';
 		return :import  if mark=='import';
 		return :head    if mark=='head';
+		return :fieldut if mark=='fieldutils';
 		return :unknow;
 	end ##}}}
 end ##}
