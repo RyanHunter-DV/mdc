@@ -39,7 +39,7 @@ class SVSupport < DataBase ##{
 		cls.addField(mk[:fields]);
 	end ##}}}
 	def __processFieldut__ mk ##{{{
-		cls.currentClass();
+		cls = currentClass();
 		cls.addFieldut(mk[:fieldut]);
 	end ##}}}
 	def __processMethods__ mk ##{{{
