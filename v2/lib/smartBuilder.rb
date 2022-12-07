@@ -30,6 +30,9 @@ class SmartBuilder ##{
 		classfield = c.name;
 		classfield = c.parameterizedClassName if c.param!=''or c.tparam!='';
 		c.addField decl+'_begin('+classfield+')';
+		c.fieldut.each do |fut|
+			c.addField "\t"+fut;
+		end
 		c.addField decl+'_end';
 
 	end ##}}}
