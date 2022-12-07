@@ -6,6 +6,7 @@ class SVClass ##{
 	attr_accessor :param;
 	attr_accessor :base;
     attr_accessor :fields;
+	attr_accessor :fieldut;
     attr_accessor :methods;
     attr_accessor :tlms;
 	attr_accessor :type;
@@ -21,6 +22,7 @@ class SVClass ##{
 		@param  = '';
 		@base   = '';
         @fields = [];
+		@fieldut= [];
         @methods= [];
         @tlms   = [];
 		@comptypes = ['component','driver','agent','monitor','env','test','sequencer'];
@@ -29,6 +31,9 @@ class SVClass ##{
     def addField fields ##{{{
         @fields.push(*fields);
     end ##}}}
+	def addFieldut uts ##{{{
+		@fieldut.push(*uts);
+	end ##}}}
     def addMethod m ##{{{
         @methods << m;
     end ##}}}
