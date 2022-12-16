@@ -26,7 +26,7 @@ class SVMarkPool ##{
 
 	def __initDefaultMarks__ ##{{{
 		@builtinMethods = ['new','build','connect','run'];
-		@methodmarks = ['task','func','vtask','vfunc','ltask','lfunc'];
+		@methodmarks = ['task','func','vtask','vfunc','ltask','lfunc','sfunc','stask'];
 		@methodmarks.push(*@builtinMethods);
 		@fieldmarks = ['field'];
 		@tlmmarks  = ['tlm-ap','tlm-ai','tlm-ae'];
